@@ -1,0 +1,70 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{amssymb}
+
+\title{
+    Création d'un horaire d'examens\\
+    \small Projet d'informatique fondamentale - INFO-F-302
+}
+\author{
+    Titouan \bsc{Christophe} et Florentin \bsc{Hennecker}\\
+    ULB BA3 info 2014-2015
+}
+\date{15 mai 2015}
+
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{\'Enonce}
+\subsection{Définitions}
+
+Voici:
+\begin{itemize}
+  \item $X = \{x_1, ..., x_{n_X}\}$, l'ensemble des examens à organiser;
+  \item $S = \{s_1, ..., s_{n_S}\}$, l'ensemble des salles disponibles;
+  \item $c : S \mapsto \mathbb{N}$, l'application qui à toute salle associe sa capacité
+  \item $E = \{e_1, ..., e_{n_S}\}$, l'ensemble des étudiants;
+  \item $a : E \mapsto 2^X$, l'application qui à tout étudiant associe les examens qu'il doit passer;
+  \item $P = \{p_1, ..., p_{n_P}\}$, l'ensemble des professeurs;
+  \item $b : P \mapsto 2^X$, l'application qui à tout professeur associe les examens qu'il doit organiser;
+  \item $T = \{t_1, ..., t_{n_T}\}$, l'ensemble des tranches horaires;
+\end{itemize}
+
+\subsection{Objectif}
+On cherche à définir une application $\mu : X \mapsto S \times {t_1, ..., t_{n_T}} \forall x \in X$,
+qui associe à chaque examen la salle et l'horaire auquel il a lieu.
+
+\textit{Si $\mu(x) = (s,t)$, alors l'examen $x$ a lieu dans la salle $s$ à l'heure $t$.}
+
+\section{Questions}
+\subsection{Définir la notion de correction pour une fonction $\mu$}
+La fonction $\mu$ doit respecter les contraintes suivantes:
+\begin{enumerate}
+  \item Un étudiant ne peut avoir qu'un seul examen par tranche horaire
+  \item Un professeur ne peut avoir qu'un seul examen par tranche horaire
+  \item Une salle ne peut accueillir qu'un seul examen à la fois
+\end{enumerate}
+
+\subsection{Formaliser ces contraintes en langage mathématique}
+\begin{enumerate}
+  \item $\mu(x_1) \mapsto (s_1,t_1) \forall x \in X$
+\end{enumerate}
+
+\subsection{Construire une formule $\Phi$ en FNC de la logique propositionnelle pour toute instance du problème}
+
+\subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
+
+% Pour toute instance du probl`eme d’emploi du temps (i.e. la donn ́ee de I =
+% (S, E, P, X, c, a, b, T )), construire une formule Φ I en FNC de la logique propositionnelle
+% telle que Φ I est SAT si et seulement si il existe μ correcte, i.e. qui satisfait les contraintes
+% que vous avez d ́efinies.
+
+\end{document}
