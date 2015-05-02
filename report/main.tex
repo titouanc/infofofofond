@@ -48,23 +48,22 @@ qui associe à chaque examen la salle et l'horaire auquel il a lieu.
 \subsection{Définir la notion de correction pour une fonction $\mu$}
 La fonction $\mu$ doit respecter les contraintes suivantes:
 \begin{enumerate}
-  \item Un étudiant ne peut avoir qu'un seul examen par tranche horaire
-  \item Un professeur ne peut avoir qu'un seul examen par tranche horaire
-  \item Une salle ne peut accueillir qu'un seul examen à la fois
+  \item Un étudiant ne peut avoir qu'un seul examen par tranche horaire;
+  \item Un professeur ne peut avoir qu'un seul examen par tranche horaire;
+  \item Une salle ne peut accueillir qu'un seul examen à la fois;
+  \item Le nombre d'étudiant présentant un examen ne peut excéder la capacité de la salle qui l'accueille;
 \end{enumerate}
 
 \subsection{Formaliser ces contraintes en langage mathématique}
 \begin{enumerate}
-  \item $\mu(x_1) \mapsto (s_1,t_1) \forall x \in X$
+  \item $\forall x_1,x_2 \in a(e_i), 1 \le i \le n_E: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2) x_1 \neq x_2 \rightarrow t_1 \neq t_2 $
+  \item $\forall x_1,x_2 \in b(p_i), 1 \le i \le n_P: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2); x_1 \neq x_2 \rightarrow t_1 \neq t_2 $
+  \item $\forall x_1,x_2 \in X: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2); (x_1 \neq x_2) \land (t_1 = t_2) \rightarrow s_1 \neq s_2 $
+  \item $\forall x \in X, 1 \le i \le n_E, \mu(x) \mapsto (s,t) \rightarrow \#\{e_i\ |\ x \in a(e_i)\} \le c(s)$
 \end{enumerate}
 
 \subsection{Construire une formule $\Phi$ en FNC de la logique propositionnelle pour toute instance du problème}
 
 \subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
-
-% Pour toute instance du probl`eme d’emploi du temps (i.e. la donn ́ee de I =
-% (S, E, P, X, c, a, b, T )), construire une formule Φ I en FNC de la logique propositionnelle
-% telle que Φ I est SAT si et seulement si il existe μ correcte, i.e. qui satisfait les contraintes
-% que vous avez d ́efinies.
 
 \end{document}
