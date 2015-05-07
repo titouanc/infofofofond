@@ -51,7 +51,10 @@ La fonction $\mu$ doit respecter les contraintes suivantes:
   \item Un étudiant ne peut avoir qu'un seul examen par tranche horaire;
   \item Un professeur ne peut avoir qu'un seul examen par tranche horaire;
   \item Une salle ne peut accueillir qu'un seul examen à la fois;
-  \item Le nombre d'étudiant présentant un examen ne peut excéder la capacité de la salle qui l'accueille;
+  \item Le nombre d'étudiants présentant un examen ne peut excéder la capacité de la salle qui l'accueille;
+  \item Chaque examen doit avoir lieu une fois
+  \item Chaque examen doit être surveillé par un professeur
+  \item Chaque examen doit être passé par au moins un étudiant
 \end{enumerate}
 
 \subsection{Formaliser ces contraintes en langage mathématique}
@@ -62,7 +65,11 @@ La fonction $\mu$ doit respecter les contraintes suivantes:
   \item $\forall x \in X, 1 \le i \le n_E, \mu(x) \mapsto (s,t) \rightarrow \#\{e_i\ |\ x \in a(e_i)\} \le c(s)$
 \end{enumerate}
 
-\subsection{Construire une formule $\Phi$ en FNC de la logique propositionnelle pour toute instance du problème}
+\subsection{Construire une formule $\Phi$ en FNC}
+Pour toute instance du problème d’emploi du temps (i.e. la donnée de I =
+(S, E, P, X, c, a, b, T)), construire une formule $\Phi_I$ en FNC de la logique propositionnelle
+telle que $\Phi_I$ est SAT si et seulement si il existe $\mu$ correcte, i.e. qui satisfait les contraintes
+que vous avez définies.
 
 \subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
 
