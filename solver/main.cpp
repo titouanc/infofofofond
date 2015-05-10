@@ -63,13 +63,12 @@ struct Problem {
     }
 
     ~Problem(){
-        int i;
-        for (i=0; i<E; i++)
-            delete[] Ae[i];
+        for (int e=0; e<E; e++)
+            delete[] Ae[e];
         delete[] Ae;
 
-        for (i=0; i<P; i++)
-            delete[] Bp[i];
+        for (int p=0; p<P; p++)
+            delete[] Bp[p];
         delete[] Bp;
 
         for (int x=0; x<X; x++){
