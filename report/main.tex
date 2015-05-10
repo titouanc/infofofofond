@@ -6,6 +6,7 @@
 \usepackage{fullpage}
 \usepackage{hyperref}
 \usepackage{amssymb}
+\usepackage{upgreek}
 
 \title{
     Création d'un horaire d'examens\\
@@ -23,7 +24,7 @@
 \maketitle
 \tableofcontents
 
-\section{\'Enonce}
+\section{\'Enonc\'e}
 \subsection{Définitions}
 
 Voici:
@@ -36,6 +37,9 @@ Voici:
   \item $P = \{p_1, ..., p_{n_P}\}$, l'ensemble des professeurs;
   \item $b : P \mapsto 2^X$, l'application qui à tout professeur associe les examens qu'il doit organiser;
   \item $T = \{t_1, ..., t_{n_T}\}$, l'ensemble des tranches horaires;
+  \item $\tau_{x,t}$ est vrai ssi l'examen $x$ se déroule à la période $t$ avec $x \in X, t \in T$
+  \item $\sigma_{x,s}$ est vrai ssi l'examen $x$ se déroule dans la salle $s$ avec $x \in X, s \in S$
+  \item $\omega_{s,x}$ est vrai ssi la salle $s$ peut accueillir l'examen $x$ (donc si la capacité de la salle est assez élevée), avec $s \in s, x \in X$
 \end{itemize}
 
 \subsection{Objectif}
@@ -66,10 +70,25 @@ La fonction $\mu$ doit respecter les contraintes suivantes:
 \end{enumerate}
 
 \subsection{Construire une formule $\Phi$ en FNC}
-Pour toute instance du problème d’emploi du temps (i.e. la donnée de I =
-(S, E, P, X, c, a, b, T)), construire une formule $\Phi_I$ en FNC de la logique propositionnelle
-telle que $\Phi_I$ est SAT si et seulement si il existe $\mu$ correcte, i.e. qui satisfait les contraintes
-que vous avez définies.
+On commence par exprimer chacune des contraintes énoncées en FNC :
+
+\begin{enumerate}
+  \item $ \bigwedge\limits_{t \in T} \,\,\,
+          \bigwedge\limits_{e \in E} \,\,\,
+          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
+  \item $ \bigwedge\limits_{t \in T} \,\,\,
+          \bigwedge\limits_{p \in P} \,\,\,
+          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
+  \item $ \bigwedge\limits_{t \in T} \,\,\,
+          \bigwedge\limits_{s \in S} \,\,\,
+          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t} \lor \lnot \sigma_{x_i,t} \lor \lnot \sigma_{x_j,t}$
+  \item $ \bigwedge\limits_{x \in X} \,\,\,
+          \bigwedge\limits_{s \in S} \,\,\,
+          \lnot \sigma_{x,s} \lor \omega_{s,x}$
+\end{enumerate}
 
 \subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
 
