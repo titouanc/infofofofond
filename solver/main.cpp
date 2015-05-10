@@ -65,11 +65,11 @@ struct Problem {
         for (int t=0; t<T; t++){
             for (int e=0; e<E; e++){
                 for (int x1=0; x1<X; x1++){
-                    if Ae[e][x1] {
+                    if (Ae[e][x1]) {
                         for (int x2=0; x2<x1; x2++){
-                            if Ae[e][x2] {
+                            if (Ae[e][x2]) {
                                 for (int s=0; s<S; s++){
-                                    solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]))
+                                    solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
                                 }
                             }
                         }
