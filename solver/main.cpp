@@ -14,11 +14,53 @@ static inline bool skip(istream & input)
 }
 
 struct Problem {
+    /* Problem input */
     int T, S, E, P, X;
     int **Ae, **Bp;
     int *Cs;
 
+    /* Problem working structures */
+    Solver solver;
+    int ***mu;
+
     Problem(istream & input){
+        parse(input);
+
+        /* 1. Creation de la matrice 3D (X,S,T) */
+        mu = new int**[X];
+        for (int x=0; x<X; x++){
+            mu[x] = new int*[S];
+            for (int s=0; s<S; s++){
+                mu[x][s] = new int[T];
+                for (int t=0; t<T; t++){
+                    mu[x][s][t] = solver.newVar();
+                }
+            }
+        }
+    }
+
+    ~Problem(){
+        int i;
+        for (i=0; i<E; i++)
+            delete[] Ae[i];
+        delete[] Ae;
+
+        for (i=0; i<P; i++)
+            delete[] Bp[i];
+        delete[] Bp;
+
+        for (int x=0; x<X; x++){
+            for (int s=0; s<S; s++){
+                delete[] mu[x][s];
+            }
+            delete[] mu[x];
+        }
+        delete[] mu;
+        delete[] Cs;
+    }
+
+    private:
+    void parse(istream & input){
         int n;
 
         input >> T;
@@ -80,22 +122,13 @@ struct Problem {
             } while (! skip(input));
         }
     }
-
-    ~Problem(){
-        int i;
-        for (i=0; i<E; i++)
-            delete Ae[i];
-        delete Ae;
-        for (i=0; i<P; i++)
-            delete Bp[i];
-        delete Bp;
-        delete Cs;
-    }
 };
 
 int main(int argc, const char **argv)
 {
-    Solver s;
-    Problem p(cin);
+    for (int i=0; i<3; i++){
+        Problem p(cin);
+        cout << "------------------------------------" << endl;
+    }
     return 0;
 }
