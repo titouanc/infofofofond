@@ -62,8 +62,6 @@ struct Problem {
                 }
             }
         }
-
-        /* 3. Contrainte: un exam */
     }
 
     ~Problem(){
