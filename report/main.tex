@@ -52,17 +52,20 @@ qui associe à chaque examen la salle et l'horaire auquel il a lieu.
 \subsection{Définir la notion de correction pour une fonction $\mu$}
 La fonction $\mu$ doit respecter les contraintes suivantes:
 \begin{enumerate}
+  \item Chaque examen doit avoir lieu une et une seule fois
+  \item Chaque examen doit avoir lieu dans une et une seule pièce
   \item Un étudiant ne peut avoir qu'un seul examen par tranche horaire;
   \item Un professeur ne peut avoir qu'un seul examen par tranche horaire;
   \item Une salle ne peut accueillir qu'un seul examen à la fois;
   \item Le nombre d'étudiants présentant un examen ne peut excéder la capacité de la salle qui l'accueille;
-  \item Chaque examen doit avoir lieu une fois
   \item Chaque examen doit être surveillé par un professeur
   \item Chaque examen doit être passé par au moins un étudiant
 \end{enumerate}
 
 \subsection{Formaliser ces contraintes en langage mathématique}
 \begin{enumerate}
+  \item 
+  \item 
   \item $\forall x_1,x_2 \in a(e_i), 1 \le i \le n_E: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2) x_1 \neq x_2 \rightarrow t_1 \neq t_2 $
   \item $\forall x_1,x_2 \in b(p_i), 1 \le i \le n_P: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2); x_1 \neq x_2 \rightarrow t_1 \neq t_2 $
   \item $\forall x_1,x_2 \in X: \mu(x_1) \mapsto (s_1,t_1), \mu(x_2) \mapsto (s_2,t_2); (x_1 \neq x_2) \land (t_1 = t_2) \rightarrow s_1 \neq s_2 $
@@ -73,6 +76,12 @@ La fonction $\mu$ doit respecter les contraintes suivantes:
 On commence par exprimer chacune des contraintes énoncées en FNC :
 
 \begin{enumerate}
+  \item $ \bigwedge\limits_{x \in X} \,\,\,
+          \bigwedge\limits_{t_i, t_j \in T, t_i \neq t_j} \,\,\,
+          \lnot \tau_{x,t_i} \lor \lnot \tau_{x,t_j}$
+  \item $ \bigwedge\limits_{x \in X} \,\,\,
+          \bigwedge\limits_{s_i, s_j \in S, s_i \neq s_j} \,\,\,
+          \lnot \sigma_{x,s_i} \lor \lnot \sigma_{x,s_j}$
   \item $ \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{e \in E} \,\,\,
           \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,
