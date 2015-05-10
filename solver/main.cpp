@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 static inline bool skip(istream & input)
 {
     char c;
@@ -26,7 +27,7 @@ struct Problem {
     Problem(istream & input){
         parse(input);
 
-        /* 1. Creation de la matrice 3D (X,S,T) */
+        /* 0. Creation de la matrice 3D (X,S,T) */
         mu = new int**[X];
         for (int x=0; x<X; x++){
             mu[x] = new int*[S];
@@ -37,6 +38,32 @@ struct Problem {
                 }
             }
         }
+
+        /* 1. Contrainte: un exam a lieu dans une salle */
+        for (int x=0; x<X; x++){
+            for (int s=0; s<S; s++){
+                for (int s2=0; s2<S; s2++){
+                    if (s == s2)
+                        continue;
+                    for (int t=0; t<T; t++){
+                        solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s2][t]));
+                    }
+                }
+            }
+        }
+
+        /* 2. Contrainte: un exam a lieu à une heure */
+        for (int x=0; x<X; x++){
+            for (int s=0; s<S; s++){
+                for (int t=0; t<T; t++){
+                    for (int t2=0; t2<T; t2++){
+                        solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s][t2]));
+                    }
+                }
+            }
+        }
+
+        /* 3. Contrainte: un exam */
     }
 
     ~Problem(){
