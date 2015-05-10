@@ -75,11 +75,11 @@ On commence par exprimer chacune des contraintes énoncées en FNC :
 \begin{enumerate}
   \item $ \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{e \in E} \,\,\,
-          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,
           \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
   \item $ \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{p \in P} \,\,\,
-          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \bigwedge\limits_{x_i, x_j \in b(p), x_i \neq x_j} \,
           \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
   \item $ \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{s \in S} \,\,\,
