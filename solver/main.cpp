@@ -108,6 +108,8 @@ struct Problem {
             } while (! skip(input));
         }
 
+        cout << endl << endl;
+
         Bp = new int*[P];
         for (int i=0; i<P; i++){
             Bp[i] = new int[X];
@@ -127,7 +129,7 @@ struct Problem {
     }
 
     void addConstraints(){
-        /* 0. Creation de la matrice 3D (X,S,T) */
+        /* Creation de la matrice 3D (X,S,T) */
         mu = new int**[X];
         for (int x=0; x<X; x++){
             vec<Lit> solution_exists;
@@ -144,38 +146,40 @@ struct Problem {
             solver.addClause(solution_exists);
         }
 
-        /* 1. Contrainte: un exam a lieu dans une et une seule salle */
+        /* Contrainte: un exam a lieu dans une et une seule salle */
         for (int x=0; x<X; x++){
-            for (int s=0; s<S; s++){
-                for (int s2=0; s2<s; s2++){
+            for (int s1=1; s1<S; s1++){
+                for (int s2=0; s2<s1; s2++){
                     for (int t=0; t<T; t++){
-                        solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s2][t]));
+                        solver.addBinary(~Lit(mu[x][s1][t]), ~Lit(mu[x][s2][t]));
                     }
                 }
             }
         }
 
-        /* 2. Contrainte: un exam a lieu à une et une seule heure */
+        /* Contrainte: un exam a lieu à une et une seule heure */
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
-                for (int t=0; t<T; t++){
-                    for (int t2=0; t2<t; t2++){
-                        solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s][t2]));
+                for (int t1=1; t1<T; t1++){
+                    for (int t2=0; t2<t1; t2++){
+                        solver.addBinary(~Lit(mu[x][s][t1]), ~Lit(mu[x][s][t2]));
                     }
                 }
             }
         }
 
-        /* 3. Contrainte : un étudiant ne peut avoir qu'un examen par tranche horaire */
-        for (int t=0; t<T; t++){
-            for (int e=0; e<E; e++){
-                for (int x1=0; x1<X; x1++){
-                    if (Ae[e][x1]) {
-                        for (int x2=0; x2<x1; x2++){
-                            if (Ae[e][x2]) {
-                                for (int s=0; s<S; s++){
-                                    solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
-                                }
+        /* Contrainte : un étudiant ne peut avoir qu'un examen par tranche horaire */
+        for (int e=0; e<E; e++){
+            for (int x1=1; x1<X; x1++){
+                for (int x2=0; x2<x1; x2++){
+                    if (pass_both_exams(e, x1, x2)){
+                        cout << "L'examen " << x1+1
+                             << " et l'examen " << x2+1
+                             << " ne peuvent avoir lieu simultanement "
+                             << "(Etudiant " << e+1 << ")" << endl;
+                        for (int s=0; s<S; s++){
+                            for (int t=0; t<T; t++){
+                                solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
                             }
                         }
                     }
@@ -183,12 +187,31 @@ struct Problem {
             }
         }
 
-        /* 4. Contrainte: capacité de la salle */
+        /* Contrainte: un prof ne peut surveiller qu'un examen à la fois */
+        for (int p=0; p<P; p++){
+            for (int x1=1; x1<X; x1++){
+                for (int x2=0; x2<x1; x2++){
+                    if (supervise_both_exams(p, x1, x2)){
+                        cout << "L'examen " << x1+1
+                             << " et l'examen " << x2+1
+                             << " ne peuvent avoir lieu simultanement "
+                             << "(Prof " << p+1 << ")" << endl;
+                        for (int s=0; s<S; s++){
+                            for (int t=0; t<T; t++){
+                                solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Contrainte: capacité de la salle */
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
                 if (students_for_exam(x) > Cs[s]){
                     cout << "L'examen " << x+1
-                         << " ne peut avoit lieu dans la salle " << s+1
+                         << " ne peut avoir lieu dans la salle " << s+1
                          << endl;
                     for (int t=0; t<T; t++){
                         solver.addUnit(~Lit(mu[x][s][t]));
@@ -198,6 +221,10 @@ struct Problem {
         }
     }
 
+    bool supervise_both_exams(int p, int x1, int x2){return Bp[p][x1] && Bp[p][x2];}
+    bool pass_both_exams(int e, int x1, int x2){return Ae[e][x1] && Ae[e][x2];}
+
+    /* -> number of students passing exam x */
     int students_for_exam(int x){
         int res = 0;
         for (int e=0; e<E; e++){
@@ -209,7 +236,12 @@ struct Problem {
 
 int main(int argc, const char **argv)
 {
-    for (int i=0; i<1; i++){
+    int nProbs = 1;
+    if (argc > 1){
+        nProbs = strtol(argv[1], NULL, 10);
+    }
+
+    for (int i=0; i<nProbs; i++){
         Problem p(cin);
         p.solver.solve();
 
@@ -220,7 +252,7 @@ int main(int argc, const char **argv)
             cout << "Le probleme a une solution" << endl;
             p.print_solution(cout);
         }
-        cout << "------------------------------------" << endl;
+        cout << "====================================" << endl;
     }
     return 0;
 }
