@@ -39,7 +39,7 @@ struct Problem {
             }
         }
 
-        /* 1. Contrainte: un exam a lieu dans une salle */
+        /* 1. Contrainte: un exam a lieu dans une et une seule salle */
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
                 for (int s2=0; s2<S; s2++){
@@ -52,12 +52,25 @@ struct Problem {
             }
         }
 
-        /* 2. Contrainte: un exam a lieu à une heure */
+        /* 2. Contrainte: un exam a lieu à une et une seule heure */
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
                 for (int t=0; t<T; t++){
                     for (int t2=0; t2<T; t2++){
                         solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s][t2]));
+                    }
+                }
+            }
+        }
+
+        /* 3. Contrainte : un étudiant ne peut avoir qu'un examen par tranche horaire */
+        for (int t=0; t<T; t++){
+            for (int e=0; e<E; e++){
+                for (int x1=0; x1<X; x1++){
+                    for (int x2=0; x2<x1; x2++){
+                        for (int s=0; s<S; s++){
+                            solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]))
+                        }
                     }
                 }
             }
