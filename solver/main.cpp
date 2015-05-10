@@ -42,9 +42,7 @@ struct Problem {
         /* 1. Contrainte: un exam a lieu dans une et une seule salle */
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
-                for (int s2=0; s2<S; s2++){
-                    if (s == s2)
-                        continue;
+                for (int s2=0; s2<s; s2++){
                     for (int t=0; t<T; t++){
                         solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s2][t]));
                     }
@@ -56,7 +54,7 @@ struct Problem {
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
                 for (int t=0; t<T; t++){
-                    for (int t2=0; t2<T; t2++){
+                    for (int t2=0; t2<t; t2++){
                         solver.addBinary(~Lit(mu[x][s][t]), ~Lit(mu[x][s][t2]));
                     }
                 }
@@ -166,6 +164,7 @@ int main(int argc, const char **argv)
 {
     for (int i=0; i<3; i++){
         Problem p(cin);
+        p.solver.solve();
         cout << "------------------------------------" << endl;
     }
     return 0;
