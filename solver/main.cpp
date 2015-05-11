@@ -272,7 +272,14 @@ int main(int argc, const char **argv)
             cout << "Le probleme a une solution" << endl;
             p.print_solution(cout);
         }
-        cout << "\033[1;33m==========================================================\033[0m" << endl;
+        cout << "\033[1;3";
+
+        if (p.solver.okay())
+            cout << "2m";
+        else
+            cout << "1m";
+        cout << "==========================================================\033[0m" << endl;
+        
     }
     return 0;
 }
