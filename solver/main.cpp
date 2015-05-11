@@ -24,20 +24,6 @@ struct Problem {
     Solver solver;
     int ***mu;
 
-    void print_solution(ostream & out)
-    {
-        for (int x=0; x<X; x++){
-            for (int s=0; s<S; s++){
-                for (int t=0; t<T; t++){
-                    if (solver.model[mu[x][s][t]] == l_True)
-                        out << "L'examen " << x+1
-                            << " a lieu dans la salle " << s+1
-                            << " a l'horaire " << t+1 << endl;
-                }
-            }
-        }
-    }
-
     Problem(istream & input){
         parse(input);
         addConstraints();
@@ -99,13 +85,13 @@ struct Problem {
                 Ae[i][j] = 0;
             }
 
-            cout << "    L'etudiant " << i+1 << endl;
-
+            cout << "    L'etudiant " << i+1 << " passe les examens:";
             do {
                 input >> n;
                 Ae[i][n-1] = 1;
-                cout << "        passe l'examen " << n << endl;
+                cout << " " << n;
             } while (! skip(input));
+            cout << endl;
         }
 
         cout << endl << endl;
@@ -117,13 +103,13 @@ struct Problem {
                 Bp[i][j] = 0;
             }
 
-            cout << "    Le prof " << i+1 << endl;
-
+            cout << "    Le prof " << i+1 << " surveille les examens:";
             do {
                 input >> n;
                 Bp[i][n-1] = 1;
-                cout << "        surveille l'examen " << n << endl;
+                cout << " " << n;
             } while (! skip(input));
+            cout << endl;
         }
         cout << "....................................." << endl;
     }
@@ -168,7 +154,7 @@ struct Problem {
             }
         }
 
-        /* Contrainte : un étudiant ne peut avoir qu'un examen par tranche horaire */
+        /* Contrainte : un étudiant ne peut passer qu'un examen à la fois */
         for (int e=0; e<E; e++){
             for (int x1=1; x1<X; x1++){
                 for (int x2=0; x2<x1; x2++){
@@ -177,9 +163,11 @@ struct Problem {
                              << " et l'examen " << x2+1
                              << " ne peuvent avoir lieu simultanement "
                              << "(Etudiant " << e+1 << ")" << endl;
-                        for (int s=0; s<S; s++){
-                            for (int t=0; t<T; t++){
-                                solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
+                        for (int s1=1; s1<S; s1++){
+                            for (int s2=0; s2<s1; s2++){
+                                for (int t=0; t<T; t++){
+                                    solver.addBinary(~Lit(mu[x1][s1][t]), ~Lit(mu[x2][s2][t]));
+                                }
                             }
                         }
                     }
@@ -196,9 +184,11 @@ struct Problem {
                              << " et l'examen " << x2+1
                              << " ne peuvent avoir lieu simultanement "
                              << "(Prof " << p+1 << ")" << endl;
-                        for (int s=0; s<S; s++){
-                            for (int t=0; t<T; t++){
-                                solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
+                        for (int s1=1; s1<S; s1++){
+                            for (int s2=0; s2<s1; s2++){
+                                for (int t=0; t<T; t++){
+                                    solver.addBinary(~Lit(mu[x1][s1][t]), ~Lit(mu[x2][s2][t]));
+                                }
                             }
                         }
                     }
@@ -232,6 +222,20 @@ struct Problem {
         }
         return res;
     }
+
+    void print_solution(ostream & out)
+    {
+        printf("%7s | %7s | %7s\n", "Horaire", "Salle", "Examen");
+        printf("--------+---------+---------\n");
+        for (int t=0; t<T; t++){
+            for (int x=0; x<X; x++){
+                for (int s=0; s<S; s++){
+                    if (solver.model[mu[x][s][t]] == l_True)
+                        printf("%7d | %7d | %7d\n", t+1, s+1, x+1);
+                }
+            }
+        }
+    }
 };
 
 int main(int argc, const char **argv)
@@ -252,7 +256,7 @@ int main(int argc, const char **argv)
             cout << "Le probleme a une solution" << endl;
             p.print_solution(cout);
         }
-        cout << "====================================" << endl;
+        cout << "\033[1;33m==========================================================\033[0m" << endl;
     }
     return 0;
 }
