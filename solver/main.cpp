@@ -132,6 +132,18 @@ struct Problem {
             solver.addClause(solution_exists);
         }
 
+        /* Contrainte: deux examens ne peuvent avoir lieu en même temps
+                       dans la même salle */
+        for (int x1=1; x1<X; x1++){
+            for (int x2=0; x2<x1; x2++){
+                for (int s=0; s<S; s++){
+                    for (int t=0; t<T; t++){
+                        solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
+                    }
+                }
+            }
+        }
+
         /* Contrainte: un exam a lieu dans une et une seule salle */
         for (int x=0; x<X; x++){
             for (int s1=1; s1<S; s1++){
