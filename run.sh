@@ -1,8 +1,10 @@
 #!/bin/bash
 
-INFILE=example-inputs.txt
+inFile="datasets/example-inputs.txt"
 
-if [[ $# == 2 ]]; then
-    INFILE=$2
+if [[ $# -ge 1 ]]; then
+    inFile=$1
+    shift
 fi
-make -C solver && solver/solver $1 < $INFILE
+
+make -C solver && sed -E 's/\#.*//g' < $inFile | solver/solver $*
