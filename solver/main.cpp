@@ -2,15 +2,36 @@
 
 using namespace std;
 
+struct Options {
+    int n_problems;
+    bool use_time;
+};
+
+Options parse_args(int argc, const char **argv)
+{
+    Options res = {1, false};
+    while (argc){
+        cout << *argv << endl;
+        if (string(*argv) == "-n" && argc > 1){
+            res.n_problems = strtol(argv[1], NULL, 10);
+            argc--;
+            argv++;
+        }
+        else if (string(*argv) == "-t"){
+            res.use_time = true;
+        }
+        argc--;
+        argv++;
+    }
+    return res;
+}
+
 int main(int argc, const char **argv)
 {
-    int nProbs = 1;
-    if (argc > 1){
-        nProbs = strtol(argv[1], NULL, 10);
-    }
+    Options opts = parse_args(argc-1, argv+1);
 
-    for (int i=0; i<nProbs; i++){
-        Problem p(cin);
+    for (int i=0; i<opts.n_problems; i++){
+        Problem p(cin, opts.use_time);
         p.solver.solve();
 
         if (! p.solver.okay()){

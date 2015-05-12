@@ -7,12 +7,15 @@ struct Problem {
     int **Ae, **Bp;
     int *Cs;
 
+    bool exam_duration;
+    int *Dx;
+
     /* Problem working structures */
     Solver solver;
     int ***mu;
 
     /* Read problem data from input */
-    Problem(std::istream & input);
+    Problem(std::istream & input, bool use_exam_duration=false);
 
     ~Problem();
 

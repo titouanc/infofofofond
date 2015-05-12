@@ -12,7 +12,7 @@ static inline bool skip(istream & input)
     }
 }
 
-Problem::Problem(istream & input)
+Problem::Problem(istream & input, bool use_exam_duration) : exam_duration(use_exam_duration)
 {
     parse(input);
     addConstraints();
@@ -102,6 +102,16 @@ void Problem::parse(istream & input)
         } while (! skip(input));
         cout << endl;
     }
+
+    Dx = new int[X];
+    if (exam_duration){
+        for (int x=0; x<X; x++){
+            input >> Dx[x];
+            skip(input);
+            cout << "L'examen " << x+1 << " dure " << Dx[x] << " periodes" << endl;
+        }
+    }
+
     cout << "....................................." << endl;
 }
 
