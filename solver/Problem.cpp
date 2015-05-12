@@ -15,7 +15,7 @@ static inline bool skip(istream & input)
 Problem::Problem(istream & input, bool use_exam_duration) : exam_duration(use_exam_duration)
 {
     parse(input);
-    addConstraints();
+    add_constraints();
 }
 
 Problem::~Problem()
@@ -110,22 +110,30 @@ void Problem::parse(istream & input)
             skip(input);
             cout << "L'examen " << x+1 << " dure " << Dx[x] << " periodes" << endl;
         }
+    } else {
+        for (int x=0; x<X; x++){
+            Dx[x] = 1;
+        }
     }
 
     cout << "....................................." << endl;
 }
 
-void Problem::addConstraints()
+void Problem::add_constraints()
 {
     /* Creation de la matrice 3D (X,S,T) */
     mu = new int**[X];
     for (int x=0; x<X; x++){
         vec<Lit> solution_exists;
         mu[x] = new int*[S];
+
+        int duration = Dx[x]-1;
         for (int s=0; s<S; s++){
             mu[x][s] = new int[T];
             for (int t=0; t<T; t++){
                 mu[x][s][t] = solver.newVar();
+            }
+            for (int t=0; t<T-duration; t++){
                 solution_exists.push(Lit(mu[x][s][t]));
             }
         }
@@ -137,10 +145,13 @@ void Problem::addConstraints()
     /* Contrainte: deux examens ne peuvent avoir lieu en même temps
                    dans la même salle */
     for (int x1=1; x1<X; x1++){
+        int duration = Dx[x1] - 1;
+
         for (int x2=0; x2<x1; x2++){
             for (int s=0; s<S; s++){
-                for (int t=0; t<T; t++){
-                    solver.addBinary(~Lit(mu[x1][s][t]), ~Lit(mu[x2][s][t]));
+                for (int t0=0; t0<T-duration; t0++){
+                    for (int t=0; t<=duration; t++)
+                    solver.addBinary(~Lit(mu[x1][s][t0]), ~Lit(mu[x2][s][t+t0]));
                 }
             }
         }
@@ -157,7 +168,7 @@ void Problem::addConstraints()
         }
     }
 
-    /* Contrainte: un exam a lieu à une et une seule heure */
+    /* Contrainte: un exam commence à une seule période */
     for (int x=0; x<X; x++){
         for (int s=0; s<S; s++){
             for (int t1=1; t1<T; t1++){

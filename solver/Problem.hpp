@@ -19,7 +19,7 @@ struct Problem {
 
     ~Problem();
 
-    void addConstraints();
+    void add_constraints();
 
     /* -> true if professor p supervise exams x1 and x2 */
     bool supervise_both_exams(int p, int x1, int x2);
