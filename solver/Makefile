@@ -1,7 +1,7 @@
 CXXFLAGS = -std=c++11 -Wall -Wextra
 TARGET = solver
 
-${TARGET}: Solver.o main.o
+${TARGET}: Solver.o Problem.o main.o
 	${CXX} -o $@ $^ ${LDFLAGS}
 
 .PHONY: clean mrproper
