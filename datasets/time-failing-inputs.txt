@@ -1,0 +1,3 @@
+# No admissible schedule: 10 periods, exam 1 and 2 cannot
+# take place at the same time, but total time would be 11
+10;2;5;5;2;1;2;1;2;1,2;7;4;
