@@ -2,6 +2,7 @@
 
 using namespace std;
 
+/* Consume chars from stdin, return true if ';' or false if ',' */
 static inline bool skip(istream & input)
 {
     char c;
@@ -10,6 +11,31 @@ static inline bool skip(istream & input)
         if (c == ',') return false;
         else if (c == ';') return true;
     }
+}
+
+static inline void next_int(istream & input, int & dest, const char *title)
+{
+    input >> dest;
+    cout << title << ": " << dest << endl;
+    skip(input);
+}
+
+static inline void next_set(istream & input, size_t n_elems, int * & dest, const char *title)
+{
+    int n;
+    for (int i=0; i<n_elems; i++){
+        dest[i] = 0;
+    }
+
+    cout << title << ": ";
+    do {
+        input >> n;
+        if (n <= n_elems){
+            dest[n-1] = 1;
+            cout << " " << n;
+        }
+    } while (! skip(input));
+    cout << endl;
 }
 
 Problem::Problem(istream & input, bool use_exam_duration) : exam_duration(use_exam_duration)
@@ -42,73 +68,34 @@ void Problem::parse(istream & input)
 {
     int n;
 
-    input >> T;
-    cout << "Nombre de tranches horaires: " << T << endl;
-    skip(input);
-
-    input >> S;
-    cout << "Nombre de salles: " << S << endl;
-    skip(input);
+    next_int(input, T, "Nombre de tranches horaires");
+    next_int(input, S, "Nombre de salles");
 
     Cs = new int[S];
     for (int i=0; i<S; i++){
-        input >> Cs[i];
-        skip(input);
-        cout << "    Salle " << i+1 << ": " << Cs[i] << " places" << endl;
+        next_int(input, Cs[i], "    Capacite");
     }
 
-    input >> E;
-    cout << "Nombre d'etudiants: " << E << endl;
-    skip(input);
-
-    input >> P;
-    cout << "Nombre de professeurs: " << P << endl;
-    skip(input);
-
-    input >> X;
-    cout << "Nombre d'examens: " << X << endl;
-    skip(input);
+    next_int(input, E, "Nombre d'etudiants");
+    next_int(input, P, "Nombre de professeurs");
+    next_int(input, X, "Nombre d'examens");
 
     Ae = new int*[E];
     for (int i=0; i<E; i++){
         Ae[i] = new int[X];
-        for (int j=0; j<X; j++){
-            Ae[i][j] = 0;
-        }
-
-        cout << "    L'etudiant " << i+1 << " passe les examens:";
-        do {
-            input >> n;
-            Ae[i][n-1] = 1;
-            cout << " " << n;
-        } while (! skip(input));
-        cout << endl;
+        next_set(input, X, Ae[i], "    Passe les examens");
     }
-
-    cout << endl << endl;
 
     Bp = new int*[P];
     for (int i=0; i<P; i++){
         Bp[i] = new int[X];
-        for (int j=0; j<X; j++){
-            Bp[i][j] = 0;
-        }
-
-        cout << "    Le prof " << i+1 << " surveille les examens:";
-        do {
-            input >> n;
-            Bp[i][n-1] = 1;
-            cout << " " << n;
-        } while (! skip(input));
-        cout << endl;
+        next_set(input, X, Bp[i], "    Surveille les examens");
     }
 
     Dx = new int[X];
     if (exam_duration){
         for (int x=0; x<X; x++){
-            input >> Dx[x];
-            skip(input);
-            cout << "L'examen " << x+1 << " dure " << Dx[x] << " periodes" << endl;
+            next_int(input, Dx[x], "    Duree de l'examen");
         }
     } else {
         for (int x=0; x<X; x++){
