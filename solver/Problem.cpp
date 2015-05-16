@@ -22,8 +22,8 @@ static inline void next_int(istream & input, int & dest, const char *title)
 
 static inline void next_set(istream & input, size_t n_elems, int * & dest, const char *title)
 {
-    int n;
-    for (int i=0; i<n_elems; i++){
+    size_t n;
+    for (size_t i=0; i<n_elems; i++){
         dest[i] = 0;
     }
 
