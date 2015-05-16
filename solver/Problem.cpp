@@ -70,8 +70,6 @@ Problem::~Problem()
 
 void Problem::parse(istream & input)
 {
-    int n;
-
     next_int(input, T, "Nombre de tranches horaires");
     next_int(input, S, "Nombre de salles");
 
