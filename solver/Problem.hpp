@@ -3,9 +3,10 @@
 
 struct Problem {
     /* Problem input */
-    int T, S, E, P, X;
+    int T, S, E, P, X, I;
     int **Ae, **Bp;
     int *Cs;
+    int **forbiddenTimes;
 
     bool exam_duration;
     int *Dx;

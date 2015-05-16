@@ -62,6 +62,10 @@ Problem::~Problem()
     }
     delete[] mu;
     delete[] Cs;
+
+    for (int i=0; i<I; i++)
+        delete[] forbiddenTimes[i];
+    delete[] forbiddenTimes;
 }
 
 void Problem::parse(istream & input)
@@ -102,6 +106,9 @@ void Problem::parse(istream & input)
             Dx[x] = 1;
         }
     }
+
+    I = 0;
+    forbiddenTimes = new int*[I];
 
     cout << "....................................." << endl;
 }
@@ -221,6 +228,17 @@ void Problem::add_constraints()
                      << endl;
                 for (int t=0; t<T; t++){
                     solver.addUnit(~Lit(mu[x][s][t]));
+                }
+            }
+        }
+    }
+
+    /* Contrainte: certaines tranches d'horaire ne sont pas admissibles (Q6) */
+    for (int i=0; i<I; i++){
+        for (int x=0; x<X; x++){
+            for (int s=0; s<S; s++){
+                for (int d=forbiddenTimes[i][0]; d<=forbiddenTimes[i][1]; d++){
+                    solver.addUnit(~Lit(mu[x][s][d]));
                 }
             }
         }
