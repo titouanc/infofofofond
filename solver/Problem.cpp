@@ -111,6 +111,11 @@ void Problem::parse(istream & input)
     cout << "....................................." << endl;
 }
 
+int Problem::duration(int x)
+{
+    return Dx[x] - 1;
+}
+
 void Problem::add_constraints()
 {
     /* Creation de la matrice 3D (X,S,T) */
@@ -119,14 +124,19 @@ void Problem::add_constraints()
         vec<Lit> solution_exists;
         mu[x] = new int*[S];
 
-        int duration = Dx[x]-1;
         for (int s=0; s<S; s++){
             mu[x][s] = new int[T];
             for (int t=0; t<T; t++){
                 mu[x][s][t] = solver.newVar();
             }
-            for (int t=0; t<T-duration; t++){
+            for (int t=0; t<T-duration(x); t++){
                 solution_exists.push(Lit(mu[x][s][t]));
+            }
+
+            /* Il doit rester assez de périodes après le début d'un exam pour
+               qu'il ait entièrement lieu */
+            for (int t=T-duration(x); t<T; t++){
+                solver.addUnit(~Lit(mu[x][s][t]));
             }
         }
 
@@ -136,14 +146,14 @@ void Problem::add_constraints()
 
     /* Contrainte: deux examens ne peuvent avoir lieu en même temps
                    dans la même salle */
-    for (int x1=1; x1<X; x1++){
-        int duration = Dx[x1] - 1;
-
-        for (int x2=0; x2<x1; x2++){
+    for (int x1=0; x1<X; x1++){
+        for (int x2=0; x2<X; x2++){
+            if (x1 == x2)
+                continue;
             for (int s=0; s<S; s++){
-                for (int t0=0; t0<T-duration; t0++){
-                    for (int t=0; t<=duration; t++)
-                    solver.addBinary(~Lit(mu[x1][s][t0]), ~Lit(mu[x2][s][t+t0]));
+                for (int t0=0; t0<T-duration(x1); t0++){
+                    for (int t=0; t<=duration(x1); t++)
+                        solver.addBinary(~Lit(mu[x1][s][t0]), ~Lit(mu[x2][s][t+t0]));
                 }
             }
         }
@@ -153,8 +163,9 @@ void Problem::add_constraints()
     for (int x=0; x<X; x++){
         for (int s1=1; s1<S; s1++){
             for (int s2=0; s2<s1; s2++){
-                for (int t=0; t<T; t++){
-                    solver.addBinary(~Lit(mu[x][s1][t]), ~Lit(mu[x][s2][t]));
+                for (int t0=0; t0<T-duration(x); t0++){
+                    for (int t=0; t<=duration(x); t++)
+                        solver.addBinary(~Lit(mu[x][s1][t0]), ~Lit(mu[x][s2][t0+t]));
                 }
             }
         }
@@ -173,8 +184,10 @@ void Problem::add_constraints()
 
     /* Contrainte : un étudiant ne peut passer qu'un examen à la fois */
     for (int e=0; e<E; e++){
-        for (int x1=1; x1<X; x1++){
-            for (int x2=0; x2<x1; x2++){
+        for (int x1=0; x1<X; x1++){
+            for (int x2=0; x2<X; x2++){
+                if (x2 == x1)
+                    continue;
                 if (pass_both_exams(e, x1, x2)){
                     cout << "L'examen " << x1+1
                          << " et l'examen " << x2+1
@@ -184,8 +197,9 @@ void Problem::add_constraints()
                         for (int s2=0; s2<S; s2++){
                             if (s2 == s1)
                                 continue;
-                            for (int t=0; t<T; t++){
-                                solver.addBinary(~Lit(mu[x1][s1][t]), ~Lit(mu[x2][s2][t]));
+                            for (int t0=0; t0<T-duration(x1); t0++){
+                                for (int t=0; t<=duration(x1); t++)
+                                    solver.addBinary(~Lit(mu[x1][s1][t0]), ~Lit(mu[x2][s2][t0+t]));
                             }
                         }
                     }
@@ -196,8 +210,10 @@ void Problem::add_constraints()
 
     /* Contrainte: un prof ne peut surveiller qu'un examen à la fois */
     for (int p=0; p<P; p++){
-        for (int x1=1; x1<X; x1++){
-            for (int x2=0; x2<x1; x2++){
+        for (int x1=0; x1<X; x1++){
+            for (int x2=0; x2<X; x2++){
+                if (x2 == x1)
+                    continue;
                 if (supervise_both_exams(p, x1, x2)){
                     cout << "L'examen " << x1+1
                          << " et l'examen " << x2+1
@@ -207,8 +223,9 @@ void Problem::add_constraints()
                         for (int s2=0; s2<S; s2++){
                             if (s2 == s1)
                                 continue;
-                            for (int t=0; t<T; t++){
-                                solver.addBinary(~Lit(mu[x1][s1][t]), ~Lit(mu[x2][s2][t]));
+                            for (int t0=0; t0<T-duration(x1); t0++){
+                                for (int t=0; t<=duration(x1); t++)
+                                    solver.addBinary(~Lit(mu[x1][s1][t0]), ~Lit(mu[x2][s2][t0+t]));
                             }
                         }
                     }
@@ -223,7 +240,7 @@ void Problem::add_constraints()
             if (students_for_exam(x) > Cs[s]){
                 cout << "L'examen " << x+1
                      << " ne peut avoir lieu dans la salle " << s+1
-                     << endl;
+                     << " (trop petite)" << endl;
                 for (int t=0; t<T; t++){
                     solver.addUnit(~Lit(mu[x][s][t]));
                 }

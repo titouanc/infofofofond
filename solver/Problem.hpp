@@ -28,6 +28,9 @@ struct Problem {
     /* -> true if student e pass both exams x1 and x2 */
     bool pass_both_exams(int e, int x1, int x2);
 
+    /* -> Number of supplementary periods for exam x */
+    int duration(int x);
+
     /* -> number of students passing exam x */
     int students_for_exam(int x);
 
