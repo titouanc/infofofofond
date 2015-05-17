@@ -38,7 +38,8 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
     cout << endl;
 }
 
-Problem::Problem(istream & input, bool use_exam_duration) : exam_duration(use_exam_duration)
+Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times) : 
+    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times)
 {
     parse(input);
     add_constraints();
@@ -105,8 +106,18 @@ void Problem::parse(istream & input)
         }
     }
 
-    I = 0;
-    forbiddenTimes = new int*[I];
+    if (use_forbidden_times){
+        next_int(input, I, "Nombre de periodes interdites");
+        forbiddenTimes = new int*[I];
+        for (int i=0; i<I; i++){
+            forbiddenTimes[i] = new int[2];
+            next_int(input, forbiddenTimes[i][0], "    Debut de la periode");
+            next_int(input, forbiddenTimes[i][1], "    Fin de la periode");
+        }
+    } else {
+        I = 0;
+        forbiddenTimes = new int*[I];
+    }
 
     cout << "....................................." << endl;
 }
@@ -253,7 +264,7 @@ void Problem::add_constraints()
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
                 for (int d=forbiddenTimes[i][0]; d<=forbiddenTimes[i][1]; d++){
-                    solver.addUnit(~Lit(mu[x][s][d]));
+                    solver.addUnit(~Lit(mu[x][s][d-1])); // d-1 because input is 1-based
                 }
             }
         }

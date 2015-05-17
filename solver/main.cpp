@@ -7,12 +7,13 @@ struct Options {
     int n_problems;
 
     bool use_time;
+    bool forbidden_times;
 
     bool use_in_file;
     const char *in_file;
 
     Options(int argc, const char **argv) : 
-        n_problems(1), use_time(false), use_in_file(false), in_file("")
+        n_problems(1), use_time(false), use_in_file(false), in_file(""), forbidden_times(false)
     {
         while (argc){
             if (string(*argv) == "-n" && argc > 1){
@@ -28,6 +29,9 @@ struct Options {
             }
             else if (string(*argv) == "-t"){
                 use_time = true;
+            }
+            else if (string(*argv) == "-f"){
+                forbidden_times = true;
             }
             argc--;
             argv++;
@@ -55,7 +59,7 @@ int main(int argc, const char **argv)
     istream & input = cin;
 
     for (int i=0; i<opts.n_problems; i++){
-        Problem p(input, opts.use_time);
+        Problem p(input, opts.use_time, opts.forbidden_times);
         p.solver.solve();
 
         if (! p.solver.okay()){
