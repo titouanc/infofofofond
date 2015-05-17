@@ -38,8 +38,8 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
     cout << endl;
 }
 
-Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times) : 
-    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times)
+Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour) : 
+    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour)
 {
     parse(input);
     add_constraints();
@@ -211,6 +211,13 @@ void Problem::add_constraints()
                             for (int t0=0; t0<T-duration(x1); t0++){
                                 for (int t=0; t<=duration(x1); t++)
                                     solver.addBinary(~Lit(mu[x1][s1][t0]), ~Lit(mu[x2][s2][t0+t]));
+
+                                /* Q9 : one hour between exams in different rooms */
+                                if (use_switch_hour){
+                                    int sh = t0+duration(x1) + 1;
+                                    if (sh < T)
+                                        solver.addBinary(~Lit(mu[x1][s1][t0]), ~Lit(mu[x2][s2][sh]));
+                                }
                             }
                         }
                     }

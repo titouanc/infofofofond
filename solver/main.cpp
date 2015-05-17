@@ -8,6 +8,7 @@ struct Options {
 
     bool use_time;
     bool forbidden_times;
+    bool switch_hour;
 
     bool use_in_file;
     const char *in_file;
@@ -32,6 +33,9 @@ struct Options {
             }
             else if (string(*argv) == "-f"){
                 forbidden_times = true;
+            }
+            else if (string(*argv) == "-s"){
+                switch_hour = true;
             }
             argc--;
             argv++;
@@ -59,7 +63,7 @@ int main(int argc, const char **argv)
     istream & input = cin;
 
     for (int i=0; i<opts.n_problems; i++){
-        Problem p(input, opts.use_time, opts.forbidden_times);
+        Problem p(input, opts.use_time, opts.forbidden_times, opts.switch_hour);
         p.solver.solve();
 
         if (! p.solver.okay()){

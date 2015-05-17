@@ -10,6 +10,7 @@ struct Problem {
 
     bool exam_duration;
     bool use_forbidden_times;
+    bool use_switch_hour;
     int *Dx;
 
     /* Problem working structures */
@@ -17,7 +18,9 @@ struct Problem {
     int ***mu;
 
     /* Read problem data from input */
-    Problem(std::istream & input, bool use_exam_duration=false, bool use_forbidden_times=false);
+    Problem(std::istream & input,   bool use_exam_duration=false,
+                                    bool use_forbidden_times=false,
+                                    bool use_switch_hour=false);
 
     ~Problem();
 
