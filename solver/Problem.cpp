@@ -270,8 +270,9 @@ void Problem::add_constraints()
     for (int i=0; i<I; i++){
         for (int x=0; x<X; x++){
             for (int s=0; s<S; s++){
-                for (int d=forbiddenTimes[i][0]; d<=forbiddenTimes[i][1]; d++){
-                    solver.addUnit(~Lit(mu[x][s][d-1])); // d-1 because input is 1-based
+                for (int d=forbiddenTimes[i][0]-duration(x); d<=forbiddenTimes[i][1]; d++){
+                    if (d > 0)
+                        solver.addUnit(~Lit(mu[x][s][d-1])); // d-1 because input is 1-based
                 }
             }
         }
