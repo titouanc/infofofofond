@@ -301,14 +301,28 @@ int Problem::students_for_exam(int x)
 
 void Problem::print_solution(ostream & out)
 {
-    printf("%7s | %7s | %7s\n", "Horaire", "Salle", "Examen");
-    printf("--------+---------+---------\n");
+    for (int s=0; s<S; s++){
+        printf("%2d (%4d) | ", s+1, Cs[s]);
+    }
+    printf("\n");
+    for (int s=0; s<12*S-1; s++){
+        printf("-");
+    }
+    printf("\n");
+    
     for (int t=0; t<T; t++){
-        for (int x=0; x<X; x++){
-            for (int s=0; s<S; s++){
-                if (solver.model[mu[x][s][t]] == l_True)
-                    printf("%7d | %7d | %7d\n", t+1, s+1, x+1);
+        for (int s=0; s<S; s++){
+            bool exam = false;
+            for (int x=0; x<X; x++){
+                if (solver.model[mu[x][s][t]] == l_True){
+                    printf("Examen %2d | ", x+1);
+                    exam = true;
+                }
+            }
+            if (! exam){
+                printf("   ----   | ");
             }
         }
+        printf("\n");
     }
 }
