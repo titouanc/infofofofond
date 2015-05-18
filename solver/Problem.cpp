@@ -277,6 +277,18 @@ void Problem::add_constraints()
             }
         }
     }
+
+    /* Contrainte: maximum k changements de salle */
+    /*
+
+    csab = (a ET non b) OU (non a ET b)
+    FNC(csab) = (a OU b) ET (non a OU non b)
+    for salleDeDépart = a in Salles:
+        for autreSalle(salleDeDépart) = b: (for autreSalle à exécuter k fois)
+            non (csab ET csac)
+            FNC ^ : non csab OU non csac
+
+    */
 }
 
 bool Problem::supervise_both_exams(int p, int x1, int x2)
