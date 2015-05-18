@@ -38,8 +38,8 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
     cout << endl;
 }
 
-Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour) : 
-    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour)
+Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour, int k) :
+    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour), k(k)
 {
     parse(input);
     add_constraints();
