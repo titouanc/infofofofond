@@ -38,8 +38,8 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
     cout << endl;
 }
 
-Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour) : 
-    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour)
+Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour, int k) :
+    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour), k(k)
 {
     parse(input);
     add_constraints();
@@ -277,6 +277,18 @@ void Problem::add_constraints()
             }
         }
     }
+
+    /* Contrainte: maximum k changements de salle */
+    /*
+
+    csab = (a ET non b) OU (non a ET b)
+    FNC(csab) = (a OU b) ET (non a OU non b)
+    for salleDeDépart = a in Salles:
+        for autreSalle(salleDeDépart) = b: (for autreSalle à exécuter k fois)
+            non (csab ET csac)
+            FNC ^ : non csab OU non csac
+
+    */
 }
 
 bool Problem::supervise_both_exams(int p, int x1, int x2)

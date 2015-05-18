@@ -17,10 +17,14 @@ struct Problem {
     Solver solver;
     int ***mu;
 
+    /* Maximum number of room switches for a student, -1 if not taken into account */
+    int k;
+
     /* Read problem data from input */
     Problem(std::istream & input,   bool use_exam_duration=false,
                                     bool use_forbidden_times=false,
-                                    bool use_switch_hour=false);
+                                    bool use_switch_hour=false,
+                                    int k=-1);
 
     ~Problem();
 
