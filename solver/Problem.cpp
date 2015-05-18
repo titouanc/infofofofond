@@ -285,8 +285,9 @@ void Problem::add_constraints()
     FNC(csab) = (a OU b) ET (non a OU non b)
     for salleDeDépart = a in Salles:
         for autreSalle(salleDeDépart) = b: (for autreSalle à exécuter k fois)
-            non (csab ET csac)
-            FNC ^ : non csab OU non csac
+            for autreSalle(b) = c:
+                non (csab ET csbc ET csca)
+                FNC ^ : non csab OU non csbc OU non csca
 
     */
 }
