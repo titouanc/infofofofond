@@ -40,11 +40,11 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
 
 Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour, int k) :
     exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour),
-    mu(NULL), rc(NULL), k(k)
+    mu(NULL), k(k), limit_room_changes(k>=0)
 {
     parse(input);
     add_constraints();
-    if (k >= 0){
+    if (limit_room_changes){
         add_roomchanges_constraint();
     }
 }
@@ -67,16 +67,6 @@ Problem::~Problem()
             delete[] mu[x];
         }
         delete[] mu;
-    }
-
-    if (rc != NULL){
-        for (int e=0; e<E; e++){
-            for (int s=0; s<S; s++){
-                delete[] rc[e][s];
-            }
-            delete[] rc[e];
-        }
-        delete[] rc;
     }
     delete[] Cs;
 
@@ -220,8 +210,8 @@ void Problem::add_constraints()
                          << " et l'examen " << x2+1
                          << " ne peuvent avoir lieu simultanement "
                          << "(Etudiant " << e+1 << ")" << endl;
-                    for (int s1=0; s1<S; s1++){
-                        for (int s2=0; s2<S; s2++){
+                    for (int s1=1; s1<S; s1++){
+                        for (int s2=0; s2<s1; s2++){
                             if (s2 == s1)
                                 continue;
                             for (int t0=0; t0<T-duration(x1); t0++){
@@ -305,43 +295,39 @@ void Problem::add_constraints()
     */
 }
 
-void Problem::add_roomchanges_constraint_rec(int e, int t, int s1, int allowed_changes)
+/*
+ * Ajout récursif de la contrainte du maximum de changements de salle
+ * @param klaus: La clause en cours de construction
+ * @param e L'étudiant considéré (celui dont on limite les changements de salle)
+ * @param t La période actuelle (la récursion parcourt les périodes dans l'ordre décroissant)
+ * @param s1 La salle de la période suivante
+ * @param allowed_changes Le nombre de changements de salle encore permis
+ */
+void Problem::add_roomchanges_constraint_rec(vec<Lit> & klaus, int e, int x1, int s1, int t, int changes)
 {
     assert(0 <= e && e < E);
     assert(0 <= t && t < T);
-    assert(0 <= allowed_changes);
 
-    /* Si on a encore droit à plus de changements qu'il reste de périodes
-       antérieures, pas besoin d'imposer de contrainte */
-    if (t < allowed_changes){
-        return;
-    }
+    klaus.push(~Lit(mu[x1][s1][t]));
 
-    /* Sinon, pour toutes les autres salles */
-    for (int s2=0; s2<S; s2++){
-        /* Si plus aucun chgmt, alors on ne peut plus jamais changer de salle */
-        if (allowed_changes == 0){
-            if (s1 == s2)
-                continue;
-            solver.addBinary(~Lit(rc[e][s1][t-1]), ~Lit(rc[e][s2][t]));
-            printf("e%d ne peut pas avoir exam en (s%d, t%d) puis (s%d, t%d)\n", e+1, s1+1, t-1, s2+1, t);
+    if (t == 0){
+        if (changes > k){
+            solver.addClause(klaus);
         }
-
-        /* Sinon on génère les autres combinaisons impossibles */
-        else {
-            for (int dt=1; t-dt>=0; dt++){
-                /* En restant dans la même salle */
-                if (s1 == s2){
-                    add_roomchanges_constraint_rec(e, t-dt, s2, allowed_changes);
-                }
-
-                /* Ou en ayant changé de salle */
-                else {
-                    add_roomchanges_constraint_rec(e, t-dt, s2, allowed_changes-1);
+    } else {
+        for (int s2=0; s2<S; s2++){
+            for (int x2=0; x2<X; x2++){
+                if (! Ae[e][x2]) continue;
+                if (s1 != s2){
+                    add_roomchanges_constraint_rec(klaus, e, x2, s2, t-1, changes+1);
+                } else {
+                    add_roomchanges_constraint_rec(klaus, e, x2, s2, t-1, changes);
                 }
             }
         }
     }
+
+    klaus.pop();
 }
 
 void Problem::add_roomchanges_constraint()
@@ -350,25 +336,13 @@ void Problem::add_roomchanges_constraint()
         return;
     }
 
-    rc = new int**[E];
     for (int e=0; e<E; e++){
-        rc[e] = new int*[S];
-
         for (int s=0; s<S; s++){
-            rc[e][s] = new int[T];
-            for (int t=0; t<T; t++){
-                rc[e][s][t] = solver.newVar();
-                for (int x=0; x<X; x++){
-                    if (Ae[x]){
-                        solver.addBinary(~Lit(rc[e][s][t]), Lit(mu[x][s][t]));
-                        solver.addBinary(Lit(rc[e][s][t]), ~Lit(mu[x][s][t]));
-                    }
-                }
+            for (int x=0; x<X; x++){
+                vec<Lit> klaus;
+                add_roomchanges_constraint_rec(klaus, e, x, s, T-1, 0);
+                assert(klaus.size() == 0);
             }
-        }
-        for (int s=0; s<S; s++){
-            add_roomchanges_constraint_rec(e, T-1, s, k);
-            printf("-----\n");
         }
     }
 }
@@ -427,19 +401,5 @@ void Problem::print_solution(ostream & out)
             }
         }
         printf("\n");
-    }
-
-
-    if (k >= 0){
-        for (int e=0; e<E; e++){
-            printf("Planning de l'etudiant %d: ", e+1);
-            for (int t=0; t<T; t++){
-                for (int s=0; s<S; s++){
-                    if (solver.model[rc[e][s][t]] == l_True)
-                        printf("t%d: salle %d    ", t, s+1);
-                }
-            }
-            printf("\n");
-        }
     }
 }

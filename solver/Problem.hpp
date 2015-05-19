@@ -19,11 +19,10 @@ struct Problem {
     /* 3D (X,S,T) matrix */
     int ***mu;
 
-    /* 3D room changes matrix (e,s,t) */
-    int ***rc;
-
     /* Maximum number of room switches for a student, -1 if not taken into account */
     int k;
+
+    bool limit_room_changes;
 
     /* Read problem data from input */
     Problem(std::istream & input,   bool use_exam_duration=false,
@@ -32,12 +31,6 @@ struct Problem {
                                     int k=-1);
 
     ~Problem();
-
-    void add_constraints();
-
-    void add_roomchanges_constraint_rec(int e, int t, int s1, int allowed_changes);
-
-    void add_roomchanges_constraint();
 
     /* -> true if professor p supervise exams x1 and x2 */
     bool supervise_both_exams(int p, int x1, int x2);
@@ -57,4 +50,10 @@ struct Problem {
 private:
     /* Parse a problem dataset from input */
     void parse(std::istream & input);
+
+    void add_constraints();
+
+    void add_roomchanges_constraint_rec(vec<Lit> & klaus, int e, int x1, int s1, int t, int changes);
+
+    void add_roomchanges_constraint();
 };
