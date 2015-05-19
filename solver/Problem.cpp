@@ -280,7 +280,6 @@ void Problem::add_constraints()
 
     /* Contrainte: maximum k changements de salle */
     /*
-
     csab = (a ET non b) OU (non a ET b)
     FNC(csab) = (a OU b) ET (non a OU non b)
     for salleDeDépart = a in Salles:
@@ -288,7 +287,6 @@ void Problem::add_constraints()
             for autreSalle(b) = c:
                 non (csab ET csbc ET csca)
                 FNC ^ : non csab OU non csbc OU non csca
-
     */
 }
 
