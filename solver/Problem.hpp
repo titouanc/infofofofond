@@ -15,7 +15,12 @@ struct Problem {
 
     /* Problem working structures */
     Solver solver;
+
+    /* 3D (X,S,T) matrix */
     int ***mu;
+
+    /* 3D room changes matrix (e,s,t) */
+    int ***rc;
 
     /* Maximum number of room switches for a student, -1 if not taken into account */
     int k;
@@ -29,6 +34,10 @@ struct Problem {
     ~Problem();
 
     void add_constraints();
+
+    void add_roomchanges_constraint_rec(int e, int t, int s1, int allowed_changes);
+
+    void add_roomchanges_constraint();
 
     /* -> true if professor p supervise exams x1 and x2 */
     bool supervise_both_exams(int p, int x1, int x2);
