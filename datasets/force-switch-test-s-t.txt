@@ -1,0 +1,2 @@
+# bit more complex than force-switch-test, to run with -s -t
+6;2;1;2;5;2;5;1,4;4;2,3;2;5;1,3,5;2,4;2;2;2;2;2;
