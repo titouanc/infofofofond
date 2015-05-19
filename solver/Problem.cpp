@@ -39,10 +39,14 @@ static inline void next_set(istream & input, size_t n_elems, int * & dest, const
 }
 
 Problem::Problem(istream & input, bool use_exam_duration, bool use_forbidden_times, bool use_switch_hour, int k) :
-    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour), k(k)
+    exam_duration(use_exam_duration), use_forbidden_times(use_forbidden_times), use_switch_hour(use_switch_hour),
+    mu(NULL), rc(NULL), k(k)
 {
     parse(input);
     add_constraints();
+    if (k >= 0){
+        add_roomchanges_constraint();
+    }
 }
 
 Problem::~Problem()
@@ -55,13 +59,25 @@ Problem::~Problem()
         delete[] Bp[p];
     delete[] Bp;
 
-    for (int x=0; x<X; x++){
-        for (int s=0; s<S; s++){
-            delete[] mu[x][s];
+    if (mu != NULL){
+        for (int x=0; x<X; x++){
+            for (int s=0; s<S; s++){
+                delete[] mu[x][s];
+            }
+            delete[] mu[x];
         }
-        delete[] mu[x];
+        delete[] mu;
     }
-    delete[] mu;
+
+    if (rc != NULL){
+        for (int e=0; e<E; e++){
+            for (int s=0; s<S; s++){
+                delete[] rc[e][s];
+            }
+            delete[] rc[e];
+        }
+        delete[] rc;
+    }
     delete[] Cs;
 
     for (int i=0; i<I; i++)
@@ -278,7 +294,6 @@ void Problem::add_constraints()
         }
     }
 
-    /* Contrainte: maximum k changements de salle */
     /*
     csab = (a ET non b) OU (non a ET b)
     FNC(csab) = (a OU b) ET (non a OU non b)
@@ -288,6 +303,74 @@ void Problem::add_constraints()
                 non (csab ET csbc ET csca)
                 FNC ^ : non csab OU non csbc OU non csca
     */
+}
+
+void Problem::add_roomchanges_constraint_rec(int e, int t, int s1, int allowed_changes)
+{
+    assert(0 <= e && e < E);
+    assert(0 <= t && t < T);
+    assert(0 <= allowed_changes);
+
+    /* Si on a encore droit à plus de changements qu'il reste de périodes
+       antérieures, pas besoin d'imposer de contrainte */
+    if (t < allowed_changes){
+        return;
+    }
+
+    /* Sinon, pour toutes les autres salles */
+    for (int s2=0; s2<S; s2++){
+        /* Si plus aucun chgmt, alors on ne peut plus jamais changer de salle */
+        if (allowed_changes == 0){
+            if (s1 == s2)
+                continue;
+            solver.addBinary(~Lit(rc[e][s1][t-1]), ~Lit(rc[e][s2][t]));
+            printf("e%d ne peut pas avoir exam en (s%d, t%d) puis (s%d, t%d)\n", e+1, s1+1, t-1, s2+1, t);
+        }
+
+        /* Sinon on génère les autres combinaisons impossibles */
+        else {
+            for (int dt=1; t-dt>=0; dt++){
+                /* En restant dans la même salle */
+                if (s1 == s2){
+                    add_roomchanges_constraint_rec(e, t-dt, s2, allowed_changes);
+                }
+
+                /* Ou en ayant changé de salle */
+                else {
+                    add_roomchanges_constraint_rec(e, t-dt, s2, allowed_changes-1);
+                }
+            }
+        }
+    }
+}
+
+void Problem::add_roomchanges_constraint()
+{
+    if (k >= T-1){
+        return;
+    }
+
+    rc = new int**[E];
+    for (int e=0; e<E; e++){
+        rc[e] = new int*[S];
+
+        for (int s=0; s<S; s++){
+            rc[e][s] = new int[T];
+            for (int t=0; t<T; t++){
+                rc[e][s][t] = solver.newVar();
+                for (int x=0; x<X; x++){
+                    if (Ae[x]){
+                        solver.addBinary(~Lit(rc[e][s][t]), Lit(mu[x][s][t]));
+                        solver.addBinary(Lit(rc[e][s][t]), ~Lit(mu[x][s][t]));
+                    }
+                }
+            }
+        }
+        for (int s=0; s<S; s++){
+            add_roomchanges_constraint_rec(e, T-1, s, k);
+            printf("-----\n");
+        }
+    }
 }
 
 bool Problem::supervise_both_exams(int p, int x1, int x2)
@@ -312,22 +395,31 @@ int Problem::students_for_exam(int x)
 
 void Problem::print_solution(ostream & out)
 {
+    printf("  t | ");
     for (int s=0; s<S; s++){
         printf("%2d (%4d) | ", s+1, Cs[s]);
     }
-    printf("\n");
-    for (int s=0; s<12*S-1; s++){
-        printf("-");
+    printf("\n----+");
+    for (int s=0; s<S; s++){
+        printf("-----------+");
     }
     printf("\n");
     
-    for (int t=0; t<T; t++){
+    for (int t0=0; t0<T; t0++){
+        printf(" %2d | ", t0);
         for (int s=0; s<S; s++){
             bool exam = false;
             for (int x=0; x<X; x++){
-                if (solver.model[mu[x][s][t]] == l_True){
-                    printf("Examen %2d | ", x+1);
-                    exam = true;
+                for (int t=t0; t>=0; t--){
+                    if (solver.model[mu[x][s][t]] == l_True){
+                        if (duration(x) >= t0-t){
+                            int bg = x%8;
+                            int fg = (bg == 7) ? 0 : 7;
+                            printf("\033[3%d;4%dmExamen %2d\033[0m | ", fg, bg, x+1);
+                            exam = true;
+                        }
+                        break;
+                    }
                 }
             }
             if (! exam){
@@ -335,5 +427,19 @@ void Problem::print_solution(ostream & out)
             }
         }
         printf("\n");
+    }
+
+
+    if (k >= 0){
+        for (int e=0; e<E; e++){
+            printf("Planning de l'etudiant %d: ", e+1);
+            for (int t=0; t<T; t++){
+                for (int s=0; s<S; s++){
+                    if (solver.model[rc[e][s][t]] == l_True)
+                        printf("t%d: salle %d    ", t, s+1);
+                }
+            }
+            printf("\n");
+        }
     }
 }

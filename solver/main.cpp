@@ -18,19 +18,22 @@ struct Options {
         n_problems(1), use_time(false), use_in_file(false), in_file(""), forbidden_times(false), k(-1)
     {
         while (argc){
+            if (string(*argv) == "-h"){
+                printf("OPTIONS: -n N: lire N problemes depuis l'entree\n"
+                       "         -k K: Autoriser au plus K changements de salle\n"
+                       "         -s  : Minimum 1h entre 2 exams pas dans la meme salle pour un etudiant\n"
+                       "         -f  : Lire les periodes qui ne devraient pas avoir d'exams dans le fichier d'entree\n"
+                       "         -t  : Lire la duree de chaque exam dans le fichier d'entree\n");
+                exit(0);
+            }
             if (string(*argv) == "-n" && argc > 1){
                 n_problems = strtol(argv[1], NULL, 10);
                 argc--;
                 argv++;
             }
-            if (string(*argv) == "-i" && argc > 1){
-                in_file = argv[1];
-                use_in_file = true;
-                argc--;
-                argv++;
-            }
             if (string(*argv) == "-k" && argc > 1){
                 k = strtol(argv[1], NULL, 10);
+                printf("MAX ROOM CHANGES: %d\n", k);
                 argc--;
                 argv++;
             }
