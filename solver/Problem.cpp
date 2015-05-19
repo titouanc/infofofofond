@@ -210,8 +210,8 @@ void Problem::add_constraints()
                          << " et l'examen " << x2+1
                          << " ne peuvent avoir lieu simultanement "
                          << "(Etudiant " << e+1 << ")" << endl;
-                    for (int s1=1; s1<S; s1++){
-                        for (int s2=0; s2<s1; s2++){
+                    for (int s1=0; s1<S; s1++){
+                        for (int s2=0; s2<S; s2++){
                             if (s2 == s1)
                                 continue;
                             for (int t0=0; t0<T-duration(x1); t0++){
