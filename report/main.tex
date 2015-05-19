@@ -110,7 +110,17 @@ la durée $d(x)$, qu'aucun examen $x'$ présenté par un étudiant présentant a
 $d(x)$ périodes suivant le début de $x$, et similairement pour les paires d'examens surveillés par un même professeur.
 
 \subsection{Les examens ne peuvent pas avoir lieu tout le temps, par exemple la nuit}
-On introduit les périodes interdites $I = \{(k_{i}^{1},k_{i}^{2}\}$
-On ajoute une simple contrainte unaire: aucun examen ne peut commencer entre ces deux bornes
+On introduit les périodes interdites $I = \{(k_1^1, k_1^2), ..., (k_{i}^{1},k_{i}^{2})\}$.
+On ajoute une simple contrainte unaire: aucun examen ne peut commencer entre ces deux bornes. Cette contrainte peut être exprimée en FNC de cette manière:
+$$ \bigwedge\limits_{x \in X} \,\,\,
+  \bigwedge\limits_{k_i^1, k_i^2 \in I}\,\,\,
+  \bigwedge\limits_{k_j | k_i^1 \leq k_j \leq k_i^2} \,\,\,
+  \lnot \tau_{x,k_j}$$
+
+Cependant, cette modélisation ne prend pas en compte des examens de durée supérieure à 1 période. Il faut donc rajouter ce paramètre dans la condition :
+$$ \bigwedge\limits_{x \in X} \,\,\,
+  \bigwedge\limits_{k_i^1, k_i^2 \in I}\,\,\,
+  \bigwedge\limits_{k_j | k_i^1-d(x)+1 \leq k_j \leq k_i^2} \,\,\,
+  \lnot \tau_{x,k_j}$$
 
 \end{document}
