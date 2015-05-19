@@ -283,26 +283,8 @@ void Problem::add_constraints()
             }
         }
     }
-
-    /*
-    csab = (a ET non b) OU (non a ET b)
-    FNC(csab) = (a OU b) ET (non a OU non b)
-    for salleDeDépart = a in Salles:
-        for autreSalle(salleDeDépart) = b: (for autreSalle à exécuter k fois)
-            for autreSalle(b) = c:
-                non (csab ET csbc ET csca)
-                FNC ^ : non csab OU non csbc OU non csca
-    */
 }
 
-/*
- * Ajout récursif de la contrainte du maximum de changements de salle
- * @param klaus: La clause en cours de construction
- * @param e L'étudiant considéré (celui dont on limite les changements de salle)
- * @param t La période actuelle (la récursion parcourt les périodes dans l'ordre décroissant)
- * @param s1 La salle de la période suivante
- * @param allowed_changes Le nombre de changements de salle encore permis
- */
 void Problem::add_roomchanges_constraint_rec(vec<Lit> & klaus, int e, int x1, int s1, int t, int changes)
 {
     assert(0 <= e && e < E);
@@ -310,18 +292,19 @@ void Problem::add_roomchanges_constraint_rec(vec<Lit> & klaus, int e, int x1, in
 
     klaus.push(~Lit(mu[x1][s1][t]));
 
-    if (t == 0){
-        if (changes > k){
-            solver.addClause(klaus);
-        }
-    } else {
-        for (int s2=0; s2<S; s2++){
-            for (int x2=0; x2<X; x2++){
-                if (! Ae[e][x2]) continue;
-                if (s1 != s2){
-                    add_roomchanges_constraint_rec(klaus, e, x2, s2, t-1, changes+1);
-                } else {
-                    add_roomchanges_constraint_rec(klaus, e, x2, s2, t-1, changes);
+    if (changes > k){
+        solver.addClause(klaus);
+    }
+    else if (t > 0) {
+        for (int x2=0; x2<X; x2++){
+            if (! Ae[e][x2]) continue;
+            for (int s2=0; s2<S; s2++){
+                for (int dt=1; t-dt>=0; dt++){
+                    if (s1 != s2){
+                        add_roomchanges_constraint_rec(klaus, e, x2, s2, t-dt, changes+1);
+                    } else {
+                        add_roomchanges_constraint_rec(klaus, e, x2, s2, t-dt, changes);
+                    }
                 }
             }
         }
@@ -332,16 +315,15 @@ void Problem::add_roomchanges_constraint_rec(vec<Lit> & klaus, int e, int x1, in
 
 void Problem::add_roomchanges_constraint()
 {
-    if (k >= T-1){
-        return;
-    }
-
     for (int e=0; e<E; e++){
-        for (int s=0; s<S; s++){
-            for (int x=0; x<X; x++){
-                vec<Lit> klaus;
-                add_roomchanges_constraint_rec(klaus, e, x, s, T-1, 0);
-                assert(klaus.size() == 0);
+        for (int x=0; x<X; x++){
+            if (! Ae[e][x]) continue;
+            for (int t=1; t<T; t++){
+                for (int s=0; s<S; s++){
+                    vec<Lit> klaus;
+                    add_roomchanges_constraint_rec(klaus, e, x, s, t, 0);
+                    assert(klaus.size() == 0);
+                }
             }
         }
     }
