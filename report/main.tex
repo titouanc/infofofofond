@@ -100,5 +100,17 @@ On commence par exprimer chacune des contraintes énoncées en FNC :
 \end{enumerate}
 
 \subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
+Voir code
+
+\subsection{Ajouter une contrainte de durée pour chaque examen}
+On ajoute au problème l'application $ d : X \rightarrow \mathbb{N} $, qui à chaque examen associe
+sa durée. Pour modéliser la nouvelle contrainte dans le programme existant, on s'intéresse seulement à la période
+à laquelle commence l'examen $x$. On garantit ensuite qu'aucun autre examen ne commence dans la même salle durant
+la durée $d(x)$, qu'aucun examen $x'$ présenté par un étudiant présentant aussi l'examen $x$ ne commence dans les
+$d(x)$ périodes suivant le début de $x$, et similairement pour les paires d'examens surveillés par un même professeur.
+
+\subsection{Les examens ne peuvent pas avoir lieu tout le temps, par exemple la nuit}
+On introduit les périodes interdites $I = \{(k_{i}^{1},k_{i}^{2}\}$
+On ajoute une simple contrainte unaire: aucun examen ne peut commencer entre ces deux bornes
 
 \end{document}

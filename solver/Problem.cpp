@@ -415,7 +415,9 @@ void Problem::print_solution(ostream & out)
                 for (int t=t0; t>=0; t--){
                     if (solver.model[mu[x][s][t]] == l_True){
                         if (duration(x) >= t0-t){
-                            printf("\033[4%dmExamen %2d\033[0m | ", x%8, x+1);
+                            int bg = x%8;
+                            int fg = (bg == 7) ? 0 : 7;
+                            printf("\033[3%d;4%dmExamen %2d\033[0m | ", fg, bg, x+1);
                             exam = true;
                         }
                         break;
