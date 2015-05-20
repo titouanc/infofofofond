@@ -362,18 +362,18 @@ int Problem::students_for_exam(int x)
 
 void Problem::print_solution(ostream & out)
 {
-    printf("  t | ");
+    fprintf(stderr, "  t | ");
     for (int s=0; s<S; s++){
-        printf("%2d (%4d) | ", s+1, Cs[s]);
+        fprintf(stderr, "%2d (%4d) | ", s+1, Cs[s]);
     }
-    printf("\n----+");
+    fprintf(stderr, "\n----+");
     for (int s=0; s<S; s++){
-        printf("-----------+");
+        fprintf(stderr, "-----------+");
     }
-    printf("\n");
+    fprintf(stderr, "\n");
     
     for (int t0=0; t0<T; t0++){
-        printf(" %2d | ", t0);
+        fprintf(stderr, " %2d | ", t0);
         for (int s=0; s<S; s++){
             bool exam = false;
             for (int x=0; x<X; x++){
@@ -382,7 +382,7 @@ void Problem::print_solution(ostream & out)
                         if (duration(x) >= t0-t){
                             int bg = x%8;
                             int fg = (bg == 7) ? 0 : 7;
-                            printf("\033[3%d;4%dmExamen %2d\033[0m | ", fg, bg, x+1);
+                            fprintf(stderr, "\033[3%d;4%dmExamen %2d\033[0m | ", fg, bg, x+1);
                             exam = true;
                         }
                         break;
@@ -390,10 +390,10 @@ void Problem::print_solution(ostream & out)
                 }
             }
             if (! exam){
-                printf("   ----   | ");
+                fprintf(stderr, "   ----   | ");
             }
         }
-        printf("\n");
+        fprintf(stderr, "\n");
     }
 
     out << "Solution: ";

@@ -7,4 +7,4 @@ if [[ $# -ge 1 ]]; then
     shift
 fi
 
-make -C solver && sed -E 's/\#.*//g' < $inFile | solver/solver $*
+make -C solver && sed -E 's/\#.*//g' < $inFile | solver/solver $* | grep -v '^[|=]'
