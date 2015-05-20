@@ -144,14 +144,17 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
   \lnot \tau_{x,k_j}$$
 
 \subsection{Maximum $k$ changements de salle pour tous les étudiants}
+  On introduit la variable $\kappa_{k, X, S, T}$ qui est vraie ssi la suite d'examens $x_i$ de l'ensemble $X$ qui se déroulent respectivement dans les salles $s_i \in S$ aux heures $t_i \in T$ provoque plus de $k$ changements.
 
   $$  \bigwedge\limits_{e \in E} \,\,\,
-      \bigwedge\limits_{x \in \mathcal{S}_{a(e)}} \,\,\,
-      \bigwedge\limits_{s \in \mathcal{S}_{S}} \,\,\,
-      \bigwedge\limits_{t \in \mathcal{S}_{T}} \,\,\,
-      \bigvee\limits_{x_i \in x, s_i \in s, t_i \in t} \lnot \sigma_{x_i, s_i} \lor \lnot \tau_{x_i, t_i} $$
+      \bigwedge\limits_{x \in a(e)} \,\,\,
+      \bigwedge\limits_{s \in \mathcal{S}_{S, |x|}} \,\,\,
+      \bigwedge\limits_{t \in \mathcal{S}_{T, |x|}} \,\,\,
+      \lnot \kappa_{k, x, s, t} \lor
+      (\bigvee\limits_{x_i \in x, s_i \in s, t_i \in t, i \in |x|} 
+       \lnot \sigma_{x_i, s_i} \lor \lnot \tau_{x_i, t_i}) $$
 
-  Rappel : $\mathcal{S}_{a(e)}$ est l'ensemble des permutations de l'ensemble $a(e)$\\
+  Notation : $\mathcal{S}_{S, |x|}$ est l'ensemble des sous-ensembles ordonnés de taille $|x|$ de l'ensemble $S$\\
 
   Nous avons implémenté une fonction récursive qui génère toutes les combinaisons d'horaires différents qui provoqueraient une infraction de la contrainte. Chacune de ces combinaisons et ensuite invalidée en insérant une clause de littéraux négatifs (un littéral par examen qui appartient à la combinaison en infraction).
 
