@@ -125,6 +125,12 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
 
 \subsection{Maximum $k$ changements de salle pour tous les étudiants}
 
+  $$  \bigwedge\limits_{e \in E} \,\,\,
+
+  $$
+
+  Nous avons implémenté une fonction récursive qui génère toutes les combinaisons d'horaires différents qui provoqueraient une infraction de la contrainte. Chacune de ces combinaisons et ensuite invalidée en insérant une clause de littéraux négatifs (un littéral par examen qui appartient à la combinaison en infraction).
+
 \subsection{Une unité de temps tampon}
   Il suffit de rajouter cette contrainte (qui prend également en compte la durée d'un examen):
   $$  \bigwedge\limits_{e \in E} \,\,\,
