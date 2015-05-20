@@ -74,28 +74,32 @@ La fonction $\mu$ doit respecter les contraintes suivantes:
 On commence par exprimer chacune des contraintes énoncées en FNC :
 
 \begin{enumerate}
-  \item $ \bigwedge\limits_{x \in X} \,\,\,
+  \item $ C_1 = \bigwedge\limits_{x \in X} \,\,\,
           \bigwedge\limits_{t_i, t_j \in T, t_i \neq t_j} \,\,\,
           \lnot \tau_{x,t_i} \lor \lnot \tau_{x,t_j}$
-  \item $ \bigwedge\limits_{x \in X} \,\,\,
+  \item $ C_2 = \bigwedge\limits_{x \in X} \,\,\,
           \bigwedge\limits_{s_i, s_j \in S, s_i \neq s_j} \,\,\,
           \lnot \sigma_{x,s_i} \lor \lnot \sigma_{x,s_j}$
-  \item $ \bigwedge\limits_{t \in T} \,\,\,
+  \item $ C_3 = \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{e \in E} \,\,\,
           \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,
           \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
-  \item $ \bigwedge\limits_{t \in T} \,\,\,
+  \item $ C_4 = \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{p \in P} \,\,\,
           \bigwedge\limits_{x_i, x_j \in b(p), x_i \neq x_j} \,
           \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t}$
-  \item $ \bigwedge\limits_{t \in T} \,\,\,
+  \item $ C_5 = \bigwedge\limits_{t \in T} \,\,\,
           \bigwedge\limits_{s \in S} \,\,\,
           \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
           \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t} \lor \lnot \sigma_{x_i,t} \lor \lnot \sigma_{x_j,t}$
-  \item $ \bigwedge\limits_{x \in X} \,\,\,
+  \item $ C_6 = \bigwedge\limits_{x \in X} \,\,\,
           \bigwedge\limits_{s \in S} \,\,\,
           \lnot \sigma_{x,s} \lor \omega_{s,x}$
 \end{enumerate}
+
+La FNC complète est donc la suivante :
+
+$$ \bigwedge\limits_{i \in \{1, 2, 3, 4, 5, 6\}} C_i$$
 
 \subsection{Implémenter et tester sur les exemples, et proposer éventuellement d’autres exemples}
 Les contraintes sont exprimées par des variables Minisat, rangées dans une matrice
@@ -138,6 +142,8 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
   \bigwedge\limits_{k_i^1, k_i^2 \in I}\,\,\,
   \bigwedge\limits_{k_j | k_i^1 \leq k_j \leq k_i^2} \,\,\,
   \lnot \tau_{x,k_j}$$
+
+Cette condition peut se lire de la manière suivante : Pour tout examen $x$, pour tout intervalle de temps interdit, pour toute heure faisant partie de cet intervalle, l'examen $x$ ne peut commencer à cette heure.\\
 
 Cependant, cette modélisation ne prend pas en compte des examens de durée supérieure à 1 période. Il faut donc rajouter ce paramètre dans la condition :
 $$ \bigwedge\limits_{x \in X} \,\,\,
