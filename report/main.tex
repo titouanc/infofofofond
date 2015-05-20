@@ -170,7 +170,7 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
 
 Cette condition peut se lire de la manière suivante : Pour tout examen $x$, pour tout intervalle de temps interdit, pour toute heure faisant partie de cet intervalle, l'examen $x$ ne peut commencer à cette heure.\\
 
-Cependant, cette modélisation ne prend pas en compte des examens de durée supérieure à 1 période. Il faut donc rajouter ce paramètre dans la condition :
+Cependant, cette modélisation ne prend pas en compte des examens de durée supérieure à 1 unité de temps. Il faut donc rajouter ce paramètre dans la condition :
 $$ \bigwedge\limits_{x \in X} \,\,\,
   \bigwedge\limits_{k_i^1, k_i^2 \in I}\,\,\,
   \bigwedge\limits_{k_j | k_i^1-d(x)+1 \leq k_j \leq k_i^2} \,\,\,
@@ -188,6 +188,13 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
        \lnot \sigma_{x_i, s_i} \lor \lnot \tau_{x_i, t_i}) $$
 
   Notation : $\mathcal{S}_{S, |x|}$ est l'ensemble des sous-ensembles ordonnés de taille $|x|$ de l'ensemble $S$\\
+
+  Intuitivement, on dit que pour tous les ordres d'examens d'un certain étudiant en temps et en salle, si cet ordre provoque plus de $k$ changements, on l'invalide. Voici le développement qui a été fait pour atteindre la clause ci-dessus:
+
+    $$ \kappa_{k, x, s, t} \rightarrow \lnot (\sigma_{x_1, s_1} \land \tau_{x_1, t_1} \land ... \land \sigma_{x_i, s_i} \land \tau_{x_i, t_i}) $$
+    $$ \lnot \kappa_{k, x, s, t} \lor \lnot (\sigma_{x_1, s_1} \land \tau_{x_1, t_1} \land ... \land \sigma_{x_i, s_i} \land \tau_{x_i, t_i}) $$
+    $$ \lnot \kappa_{k, x, s, t} \lor (\bigvee\limits_{x_i \in x, s_i \in s, t_i \in t, i \in |x|} \lnot \sigma_{x_i, s_i} \lor \lnot \tau_{x_i, t_i}) $$
+
 
   Nous avons implémenté une fonction récursive qui génère toutes les combinaisons d'horaires différents qui provoqueraient une infraction de la contrainte. Chacune de ces combinaisons et ensuite invalidée en insérant une clause de littéraux négatifs (un littéral par examen qui appartient à la combinaison en infraction).
 
