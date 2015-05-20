@@ -9,13 +9,18 @@ void print_tmp_res()
 {
     int l=0, c=0;
     for (size_t i=0; i<sizeof(tmp_res); i++){
-        c++;
+        do {
+            c++;
+            int d = hypot(l-18, c-70)/3;
+            if (d <= 7)
+                cerr << "\033[1;33;4" << 1 + (d%6) << "m";
+                cerr << ((tmp_res[i]==0x0a) ? ' ' : tmp_res[i]) << "\033[0m";
+        } while (tmp_res[i] == 0x0a && c < 100);
         if (tmp_res[i] == 0x0a){
             c = 0;
             l++;
+            cerr << endl;
         }
-        int d = hypot(l-14, c-14)/1.5;
-        cerr << "\033[4" << d << "m" << tmp_res[i] << "\033[0m";
     }
 }
 
