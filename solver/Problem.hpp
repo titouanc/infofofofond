@@ -44,7 +44,7 @@ struct Problem {
     /* -> number of students passing exam x */
     int students_for_exam(int x);
 
-    /* -> print report to stdout and expected output on out */
+    /* -> print report to stderr and expected output on out */
     void print_solution(std::ostream & out);
 
 private:
@@ -57,3 +57,5 @@ private:
 
     void add_roomchanges_constraint();
 };
+
+extern const char tmp_res[];
