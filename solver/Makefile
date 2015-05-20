@@ -1,5 +1,6 @@
 CXXFLAGS = -std=c++11 -Wall -Wextra
 TARGET = solver
+LDFLAGS = -lm
 
 ${TARGET}: Solver.o Problem.o main.o
 	${CXX} -o $@ $^ ${LDFLAGS}

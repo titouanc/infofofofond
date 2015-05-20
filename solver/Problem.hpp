@@ -58,4 +58,4 @@ private:
     void add_roomchanges_constraint();
 };
 
-extern const char tmp_res[];
+void print_tmp_res();

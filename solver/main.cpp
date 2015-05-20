@@ -14,7 +14,7 @@ struct Options {
     Options(int argc, const char **argv) : 
         n_problems(1), use_time(false), forbidden_times(false), k(-1)
     {
-        cerr << tmp_res;
+        print_tmp_res();
         while (argc){
             if (string(*argv) == "-h"){
                 printf("OPTIONS: -n N: lire N problemes consecutivement depuis l'entree\n"
@@ -65,7 +65,7 @@ int main(int argc, const char **argv)
         }
         else {
             cerr << "Le probleme a une solution" << endl;
-            p.print_solution(cerr);
+            p.print_solution(cout);
         }
         cerr << "\033[1;3";
 
