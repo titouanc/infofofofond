@@ -125,7 +125,13 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
 
 \subsection{Maximum $k$ changements de salle pour tous les étudiants}
 
-  $$  \bigwedge\limits_{e \in E} $$
+  $$  \bigwedge\limits_{e \in E} \,\,\,
+      \bigwedge\limits_{x \in \mathcal{S}_{a(e)}} \,\,\,
+      \bigwedge\limits_{s \in \mathcal{S}_{S}} \,\,\,
+      \bigwedge\limits_{t \in \mathcal{S}_{T}} \,\,\,
+      \bigvee\limits_{x_i \in x, s_i \in s, t_i \in t} \lnot \sigma_{x_i, s_i} \lor \lnot \tau_{x_i, t_i} $$
+
+  Rappel : $\mathcal{S}_{a(e)}$ est l'ensemble des permutations de l'ensemble $a(e)$\\
 
   Nous avons implémenté une fonction récursive qui génère toutes les combinaisons d'horaires différents qui provoqueraient une infraction de la contrainte. Chacune de ces combinaisons et ensuite invalidée en insérant une clause de littéraux négatifs (un littéral par examen qui appartient à la combinaison en infraction).
 
