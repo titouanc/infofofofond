@@ -135,6 +135,31 @@ sa durée. Pour modéliser la nouvelle contrainte dans le programme existant, on
 la durée $d(x)$, qu'aucun examen $x'$ présenté par un étudiant présentant aussi l'examen $x$ ne commence dans les
 $d(x)$ périodes suivant le début de $x$, et similairement pour les paires d'examens surveillés par un même professeur.
 
+
+$$ C_3' = \bigwedge\limits_{t \in T} \,\,\,
+        \bigwedge\limits_{1 \leq \delta \leq d(x)} \,\,\,
+        \bigwedge\limits_{e \in E} \,\,\,
+        \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,
+        \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t+\delta}$$
+
+$$ C_4' = \bigwedge\limits_{t \in T} \,\,\,
+        \bigwedge\limits_{1 \leq \delta \leq d(x)} \,\,\,
+        \bigwedge\limits_{p \in P} \,\,\,
+        \bigwedge\limits_{x_i, x_j \in b(p), x_i \neq x_j} \,
+        \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t+\delta}$$
+
+$$ C_5' = \bigwedge\limits_{t \in T} \,\,\,
+          \bigwedge\limits_{1 \leq \delta \leq d(x)} \,\,\,
+          \bigwedge\limits_{s \in S} \,\,\,
+          \bigwedge\limits_{x_i, x_j \in X, x_i \neq x_j} \,
+          \lnot \tau_{x_i,t} \lor \lnot \tau_{x_j,t+\delta} \lor \lnot \sigma_{x_i,t} \lor \lnot \sigma_{x_j,t} $$
+
+
+Notons que ce sont des généralisations de $C_3, C_4 et C_5$. En effet, si on considère que tous les
+examens ont une durée d'une période ($1 \leq \delta \leq 1 \rightarrow \delta = 1$), les formules homologues sont équivalentes.
+
+
+
 \subsection{Les examens ne peuvent pas avoir lieu tout le temps, par exemple la nuit}
 On introduit les périodes interdites $I = \{(k_1^1, k_1^2), ..., (k_{i}^{1},k_{i}^{2})\}$.
 On ajoute une simple contrainte unaire: aucun examen ne peut commencer entre ces deux bornes. Cette contrainte peut être exprimée en FNC de cette manière:
