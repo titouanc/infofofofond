@@ -37,7 +37,7 @@ Voici:
   \item $P = \{p_1, ..., p_{n_P}\}$, l'ensemble des professeurs;
   \item $b : P \mapsto 2^X$, l'application qui à tout professeur associe les examens qu'il doit organiser;
   \item $T = \{t_1, ..., t_{n_T}\}$, l'ensemble des tranches horaires;
-  \item $\tau_{x,t}$ est vrai ssi l'examen $x$ se déroule à la période $t$ avec $x \in X, t \in T$
+  \item $\tau_{x,t}$ est vrai ssi l'examen $x$ commence à la période $t$ avec $x \in X, t \in T$
   \item $\sigma_{x,s}$ est vrai ssi l'examen $x$ se déroule dans la salle $s$ avec $x \in X, s \in S$
   \item $\omega_{s,x}$ est vrai ssi la salle $s$ peut accueillir l'examen $x$ (donc si la capacité de la salle est assez élevée), avec $s \in s, x \in X$
 \end{itemize}
@@ -122,5 +122,18 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
   \bigwedge\limits_{k_i^1, k_i^2 \in I}\,\,\,
   \bigwedge\limits_{k_j | k_i^1-d(x)+1 \leq k_j \leq k_i^2} \,\,\,
   \lnot \tau_{x,k_j}$$
+
+\subsection{Maximum $k$ changements de salle pour tous les étudiants}
+
+\subsection{Une unité de temps tampon}
+  Il suffit de rajouter cette contrainte (qui prend également en compte la durée d'un examen):
+  $$  \bigwedge\limits_{e \in E} \,\,\,
+      \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,\,\,
+      \bigwedge\limits_{s_i, s_j \in S, s_i \neq s_j} \,\,\,
+      \bigwedge\limits_{t \in T} \,\,\,
+      \lnot \sigma_{x_i, s_i} \lor \lnot \sigma_{x_j, s_j}
+      \lor \lnot \tau_{x_1, t} \lor \lnot \tau_{x_2, t+d(x_1)} $$
+
+  Elle spécifie simplement que deux examens passés par un même étudiant dans deux salles différentes ne peuvent pas commencer la période qui suit directement la dernière période du premier examen.
 
 \end{document}
