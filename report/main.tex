@@ -214,13 +214,14 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
   Elle spécifie simplement que deux examens passés par un même étudiant dans deux salles différentes ne peuvent pas commencer à la période qui suit directement la dernière période du premier examen.
 
 \subsection{Proposer d'autres contraintes naturelles et donner leur modélisation.}
-\subsubsection{k unités de temps entre tout examen pour un étudiant}
-Nous avons trouvé utile d'insérer des périodes de temps entre les examens pour laisser du temps pour réviser aux étudiants. On peut modéliser cette contrainte en FNC (notons qu'il faut prendre en compte la durée des examens ici aussi) :
+\subsubsection{n unités de temps entre tout examen pour un étudiant}
+Nous avons trouvé utile d'insérer des périodes de temps entre les examens pour laisser du temps pour réviser aux étudiants.
+On peut modéliser cette contrainte en FNC (notons qu'il faut prendre en compte la durée des examens ici aussi) :
 
 $$  \bigwedge\limits_{e \in E} \,\,\,
       \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,\,\,
       \bigwedge\limits_{t \in T} \,\,\,
-      \bigwedge\limits_{0 \leq \delta \leq k} \,\,\,
+      \bigwedge\limits_{0 \leq \delta \leq n} \,\,\,
       \lnot \tau_{x_1, t} \lor \lnot \tau_{x_2, t+d(x_1)+\delta} $$
 
 
