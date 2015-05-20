@@ -48,6 +48,28 @@ qui associe à chaque examen la salle et l'horaire auquel il a lieu.
 
 \textit{Si $\mu(x) = (s,t)$, alors l'examen $x$ a lieu dans la salle $s$ à l'heure $t$.}
 
+\section{Implémentation}
+\subsection{Structure de données}
+Les contraintes sont exprimées par des variables Minisat, rangées dans une matrice
+\texttt{mu[x][s][t]}. La variable est vraie si l'examen $x$ commence dans la salle
+$s$ au moment $t$. 
+
+\subsection{Format d'entrée}
+Nous utilisons le format d'entrée donné dans les consignes avec les adjonctions suivantes:
+\begin{enumerate}
+  \item On rajoute la durée des examens, dans l'ordre, séparées par un \texttt{';'}
+  \item On rajoute les périodes interdites, au format \texttt{debut,fin;}
+\end{enumerate}
+
+Par ailleurs, le programme accepte les options suivantes:
+\begin{itemize}
+  \item \texttt{-n N}: lire N problemes consecutivement depuis l'entrée standard
+  \item \texttt{-k K}: Autoriser au plus K changements de salle
+  \item \texttt{-s  }: Minimum 1h entre 2 exams pas dans la meme salle pour un etudiant
+  \item \texttt{-f  }: Lire les periodes qui ne devraient pas avoir d'exams dans le fichier d'entree
+  \item \texttt{-t  }: Lire la duree de chaque exam dans le fichier d'entree
+\end{itemize}
+
 \section{Questions}
 \subsection{Définir la notion de correction pour une fonction $\mu$}
 La fonction $\mu$ doit respecter les contraintes suivantes:
