@@ -123,4 +123,17 @@ $$ \bigwedge\limits_{x \in X} \,\,\,
   \bigwedge\limits_{k_j | k_i^1-d(x)+1 \leq k_j \leq k_i^2} \,\,\,
   \lnot \tau_{x,k_j}$$
 
+\subsection{Maximum $k$ changements de salle pour tous les étudiants}
+
+\subsection{Une unité de temps tampon}
+  Il suffit de rajouter cette contrainte (qui prend également en compte la durée d'un examen):
+  $$  \bigwedge\limits_{e \in E} \,\,\,
+      \bigwedge\limits_{x_i, x_j \in a(e), x_i \neq x_j} \,\,\,
+      \bigwedge\limits_{s_i, s_j \in S, s_i \neq s_j} \,\,\,
+      \bigwedge\limits_{t \in T} \,\,\,
+      \lnot \sigma_{x_i, s_i} \lor \lnot \sigma_{x_j, s_j}
+      \lor \lnot \tau_{x_1, t} \lor \lnot \tau_{x_2, t+d(x_1)} $$
+
+  Elle spécifie simplement que deux examens passés par un même étudiant dans deux salles différentes ne peuvent pas commencer la période qui suit directement la dernière période du premier examen.
+
 \end{document}
